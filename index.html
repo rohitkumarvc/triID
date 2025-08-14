@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern ID Card Generator</title>
+    <title>ID Card Generator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -171,7 +171,6 @@
       }
 
       #idCard {
-        /* Width increased by 4px as requested */
         width: 379px;
         border-radius: 18px;
         box-shadow: var(--shadow);
@@ -382,11 +381,7 @@
     <div id="cardPage">
       <div id="idCard">
         <div class="card-header">
-          <img
-          src="icon.png"
-            class="emblem"
-            alt="National Emblem"
-          />
+          <img src="icon.png" class="emblem" alt="National Emblem" />
           <div class="header-text">
             <h2>Republic of India</h2>
             <p>भारत गणराज्य</p>
@@ -517,7 +512,9 @@
           alert("Please fill all fields and upload a photo.");
           return;
         }
+
         const idNumber = "ID" + Math.floor(100000 + Math.random() * 900000);
+
         document.getElementById("cardName").innerText = name;
         document.getElementById("cardIdNumber").innerText = `: ${idNumber}`;
         document.getElementById("cardDob").innerText = `: ${dob}`;
@@ -575,5 +572,12 @@
         previewImage.src = "#";
       }
     </script>
+
+    <!-- GoatCounter Analytics Script -->
+    <script
+      data-goatcounter="https://rohit.goatcounter.com/count"
+      async
+      src="//gc.zgo.at/count.js"
+    ></script>
   </body>
 </html>
