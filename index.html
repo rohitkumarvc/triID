@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Final ID Card Generator</title>
+    <title>Modern ID Card Generator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Libre+Barcode+39+Text&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Libre+Barcode+39+Text&display=swap"
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -18,16 +18,15 @@
         --white: #ffffff;
         --green: #138808;
         --navy: #000080;
-        --dark-text: #2c3e50;
+        --dark-text: #34495e;
         --light-text: #7f8c8d;
-        --background: #ecf0f1;
-        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        --border-color: #bdc3c7;
+        --background: #f4f7f6;
+        --border-color: #e0e4e2;
+        --shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
       }
-
       body {
         margin: 0;
-        font-family: "Roboto", sans-serif;
+        font-family: "Poppins", sans-serif;
         background-color: var(--background);
         color: var(--dark-text);
         display: flex;
@@ -37,7 +36,6 @@
         padding: 20px;
         box-sizing: border-box;
       }
-
       #formPage,
       #cardPage {
         width: 100%;
@@ -45,12 +43,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        transition: opacity 0.3s ease-in-out;
       }
       #cardPage {
         display: none;
       }
-
       .form-container {
         background: var(--white);
         padding: 30px 40px;
@@ -73,18 +69,16 @@
         display: block;
         margin-bottom: 8px;
         font-weight: 500;
-        color: var(--light-text);
-        font-size: 14px;
+        color: #555;
       }
       input[type="text"],
-      input[type="date"],
-      input[type="file"] {
+      input[type="date"] {
         width: 100%;
         padding: 12px 15px;
         box-sizing: border-box;
         border-radius: 8px;
         border: 1px solid var(--border-color);
-        font-family: "Roboto", sans-serif;
+        font-family: "Poppins", sans-serif;
         font-size: 16px;
         transition: border-color 0.3s, box-shadow 0.3s;
       }
@@ -94,22 +88,87 @@
         box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.2);
       }
 
-      .primary-btn {
-        background-color: var(--saffron);
-        color: white;
-        padding: 14px 25px;
-        border: none;
-        border-radius: 8px;
+      .upload-area {
+        width: 100%;
+        padding: 30px;
+        border: 2px dashed var(--border-color);
+        border-radius: 12px;
+        background-color: #fafafa;
+        text-align: center;
         cursor: pointer;
-        font-size: 18px;
+        transition: background-color 0.3s, border-color 0.3s;
+        box-sizing: border-box;
+      }
+      .upload-area:hover,
+      .upload-area.drag-over {
+        background-color: #f0f0f0;
+        border-color: var(--saffron);
+      }
+      .upload-area-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        color: var(--light-text);
+      }
+      .upload-icon {
+        width: 40px;
+        height: 40px;
+        color: var(--saffron);
+      }
+      .upload-area p {
+        margin: 0;
         font-weight: 500;
-        transition: transform 0.2s ease, background-color 0.2s ease;
+      }
+      .upload-area span {
+        font-size: 12px;
+      }
+      #photo-input {
+        display: none;
+      }
+      #file-preview {
+        display: none;
+        align-items: center;
+        gap: 15px;
+      }
+      #preview-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+      #file-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--dark-text);
+        text-align: left;
+      }
+
+      /* --- FIXED PRIMARY BUTTON STYLE --- */
+      .primary-btn {
         width: 100%;
         margin-top: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        padding: 14px 25px;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background-color: var(--saffron);
+        color: white;
       }
       .primary-btn:hover {
         background-color: #e68a2e;
-        transform: translateY(-2px);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(255, 153, 51, 0.3);
+      }
+      .primary-btn:active {
+        transform: translateY(-1px);
       }
 
       #idCard {
@@ -121,11 +180,9 @@
         flex-direction: column;
         background: var(--white);
       }
-
-      /* --- ENLARGED CARD HEADER --- */
       .card-header {
         background: var(--saffron);
-        padding: 20px; /* Increased padding */
+        padding: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -134,21 +191,20 @@
         border-bottom: 2px solid rgba(0, 0, 0, 0.1);
       }
       .emblem {
-        width: 60px; /* Increased size */
+        width: 60px;
         height: auto;
-        margin-right: 20px; /* Adjusted margin */
+        margin-right: 20px;
       }
       .header-text h2 {
         margin: 0;
-        font-size: 19px; /* Increased font size */
+        font-size: 19px;
         font-weight: 700;
       }
       .header-text p {
         margin: 0;
-        font-size: 15px; /* Increased font size */
+        font-size: 15px;
         font-weight: 500;
       }
-
       .card-body {
         display: flex;
         padding: 25px;
@@ -167,7 +223,6 @@
         border-radius: 12px;
         border: 4px solid var(--background);
       }
-
       .info-section {
         flex-grow: 1;
       }
@@ -195,7 +250,6 @@
         font-weight: 500;
         color: var(--dark-text);
       }
-
       .card-footer {
         background: var(--green);
         color: white;
@@ -221,22 +275,45 @@
         gap: 15px;
       }
       .card-actions button {
-        width: auto;
-        padding: 12px 25px;
-        font-size: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-family: "Poppins", sans-serif;
         font-weight: 500;
+        font-size: 16px;
+        padding: 12px 25px;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .card-actions button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .card-actions button:active {
+        transform: translateY(-1px);
+      }
+      .card-actions button svg {
+        width: 20px;
+        height: 20px;
       }
       #downloadBtn {
         background-color: var(--green);
+        color: white;
       }
       #downloadBtn:hover {
-        background-color: #107507;
+        background-color: #179a09;
       }
       #backBtn {
-        background-color: #7f8c8d;
+        background-color: var(--white);
+        color: var(--light-text);
+        border-color: var(--border-color);
       }
       #backBtn:hover {
-        background-color: #6a767e;
+        border-color: var(--light-text);
+        color: var(--dark-text);
       }
     </style>
   </head>
@@ -246,37 +323,70 @@
         <h1>Identity Card Generator</h1>
         <form id="idForm">
           <div class="form-group">
-            <label for="name">Full Name</label>
-            <input
+            <label for="name">Full Name</label
+            ><input
               type="text"
               id="name"
-              placeholder="e.g., Priya Singh"
+              placeholder="e.g., Aarav Sharma"
               required
             />
           </div>
           <div class="form-group">
-            <label for="dob">Date of Birth</label>
-            <input type="date" id="dob" required />
+            <label for="dob">Date of Birth</label
+            ><input type="date" id="dob" required />
           </div>
           <div class="form-group">
-            <label for="city">City / Place of Birth</label>
-            <input type="text" id="city" placeholder="e.g., Delhi" required />
+            <label for="city">City / Place</label
+            ><input
+              type="text"
+              id="city"
+              placeholder="e.g., Navi Mumbai"
+              required
+            />
           </div>
           <div class="form-group">
-            <label for="photo">Upload Your Photo</label>
-            <input type="file" id="photo" accept="image/*" required />
+            <label>Your Photo</label>
+            <label for="photo-input" class="upload-area" id="upload-area">
+              <div class="upload-area-content" id="upload-prompt">
+                <svg
+                  class="upload-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"
+                  />
+                </svg>
+                <p>Drag & drop image here</p>
+                <span>or click to browse</span>
+              </div>
+              <div id="file-preview">
+                <img id="preview-image" src="#" alt="Image preview" />
+                <p id="file-name"></p>
+              </div>
+            </label>
+            <input type="file" id="photo-input" accept="image/*" />
           </div>
-          <button type="button" class="primary-btn" onclick="generateID()">
+          <button
+            type="button"
+            class="primary-btn"
+            id="generateBtn"
+            onclick="generateID()"
+          >
             Generate ID Card
           </button>
         </form>
       </div>
     </div>
-
     <div id="cardPage">
       <div id="idCard">
         <div class="card-header">
-          <img src="icon.png" class="emblem" alt="National Emblem" />
+          <img
+          src="icon.png"
+            class="emblem"
+            alt="National Emblem"
+          />
           <div class="header-text">
             <h2>Republic of India</h2>
             <p>भारत गणराज्य</p>
@@ -289,12 +399,12 @@
           <div class="info-section">
             <h3 id="cardName"></h3>
             <div class="info-grid">
-              <span class="label">ID Number</span>
-              <span class="value" id="cardIdNumber"></span>
-              <span class="label">Date of Birth</span>
-              <span class="value" id="cardDob"></span>
-              <span class="label">Place</span>
-              <span class="value" id="cardCity"></span>
+              <span class="label">ID Number</span
+              ><span class="value" id="cardIdNumber"></span>
+              <span class="label">Date of Birth</span
+              ><span class="value" id="cardDob"></span>
+              <span class="label">Place</span
+              ><span class="value" id="cardCity"></span>
             </div>
           </div>
         </div>
@@ -303,10 +413,31 @@
           <div class="barcode" id="cardBarcode"></div>
         </div>
       </div>
-
       <div class="card-actions">
-        <button id="backBtn" onclick="goBack()">&#8592; Go Back</button>
-        <button id="downloadBtn" onclick="downloadID()">Download as PNG</button>
+        <button id="backBtn" onclick="goBack()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"
+            />
+          </svg>
+          <span>Go Back</span>
+        </button>
+        <button id="downloadBtn" onclick="downloadID()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"
+            />
+          </svg>
+          <span>Download</span>
+        </button>
       </div>
     </div>
 
@@ -320,22 +451,72 @@
         "Service to humanity is service to God.",
         "Arise, awake, and stop not till the goal is reached.",
       ];
+      const formPage = document.getElementById("formPage"),
+        cardPage = document.getElementById("cardPage"),
+        idForm = document.getElementById("idForm");
+      const uploadArea = document.getElementById("upload-area"),
+        photoInput = document.getElementById("photo-input"),
+        uploadPrompt = document.getElementById("upload-prompt"),
+        filePreview = document.getElementById("file-preview"),
+        previewImage = document.getElementById("preview-image"),
+        fileName = document.getElementById("file-name");
+      let uploadedFile = null;
 
-      const formPage = document.getElementById("formPage");
-      const cardPage = document.getElementById("cardPage");
-      const idForm = document.getElementById("idForm");
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) =>
+        uploadArea.addEventListener(eventName, preventDefaults, false)
+      );
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      ["dragenter", "dragover"].forEach((eventName) =>
+        uploadArea.addEventListener(
+          eventName,
+          () => uploadArea.classList.add("drag-over"),
+          false
+        )
+      );
+      ["dragleave", "drop"].forEach((eventName) =>
+        uploadArea.addEventListener(
+          eventName,
+          () => uploadArea.classList.remove("drag-over"),
+          false
+        )
+      );
+      uploadArea.addEventListener("drop", handleDrop, false);
+      photoInput.addEventListener("change", handleChange, false);
+
+      function handleDrop(e) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+      function handleChange(e) {
+        handleFile(e.target.files[0]);
+      }
+
+      function handleFile(file) {
+        if (file && file.type.startsWith("image/")) {
+          uploadedFile = file;
+          fileName.textContent = file.name;
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            previewImage.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+          uploadPrompt.style.display = "none";
+          filePreview.style.display = "flex";
+        } else {
+          alert("Please upload a valid image file.");
+        }
+      }
 
       function generateID() {
-        const name = document.getElementById("name").value.trim();
-        const dob = document.getElementById("dob").value;
-        const city = document.getElementById("city").value.trim();
-        const photo = document.getElementById("photo").files[0];
-
-        if (!name || !dob || !city || !photo) {
+        const name = document.getElementById("name").value.trim(),
+          dob = document.getElementById("dob").value,
+          city = document.getElementById("city").value.trim();
+        if (!name || !dob || !city || !uploadedFile) {
           alert("Please fill all fields and upload a photo.");
           return;
         }
-
         const idNumber = "ID" + Math.floor(100000 + Math.random() * 900000);
         document.getElementById("cardName").innerText = name;
         document.getElementById("cardIdNumber").innerText = `: ${idNumber}`;
@@ -345,73 +526,53 @@
           quotes[Math.floor(Math.random() * quotes.length)]
         }"`;
         document.getElementById("cardBarcode").innerText = `*${idNumber}*`;
-
         const reader = new FileReader();
         reader.onload = function (e) {
           document.getElementById("cardPhoto").src = e.target.result;
           formPage.style.display = "none";
           cardPage.style.display = "flex";
         };
-        reader.readAsDataURL(photo);
+        reader.readAsDataURL(uploadedFile);
       }
 
-      // --- FIXED DOWNLOAD FUNCTION ---
-      async function downloadID() {
-        const cardElement = document.getElementById("idCard");
-        const downloadBtn = document.getElementById("downloadBtn");
-        const emblemImg = document.querySelector("#idCard .emblem");
-        const originalSrc = emblemImg.src;
-
-        downloadBtn.innerText = "Processing...";
+      function downloadID() {
+        const cardElement = document.getElementById("idCard"),
+          downloadBtn = document.getElementById("downloadBtn");
         downloadBtn.disabled = true;
-
-        try {
-          // Convert external image to a Base64 Data URI to prevent canvas tainting
-          const response = await fetch(originalSrc);
-          const blob = await response.blob();
-          const dataUrl = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
+        downloadBtn.querySelector("span").innerText = "Processing...";
+        html2canvas(cardElement, {
+          backgroundColor: null,
+          scale: 3,
+          useCORS: true,
+        })
+          .then((canvas) => {
+            const link = document.createElement("a");
+            const userName = document
+              .getElementById("name")
+              .value.trim()
+              .replace(/\s+/g, "_");
+            link.download = `ID-Card-${userName || "user"}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+          })
+          .catch((error) => {
+            console.error("Download failed:", error);
+            alert("An error occurred during download.");
+          })
+          .finally(() => {
+            downloadBtn.disabled = false;
+            downloadBtn.querySelector("span").innerText = "Download";
           });
-
-          // Temporarily replace src with Data URI for canvas capture
-          emblemImg.src = dataUrl;
-
-          const canvas = await html2canvas(cardElement, {
-            backgroundColor: null,
-            scale: 3,
-            useCORS: true,
-          });
-
-          // Revert the src back to the original after capture
-          emblemImg.src = originalSrc;
-
-          const link = document.createElement("a");
-          const userName = document
-            .getElementById("name")
-            .value.trim()
-            .replace(/\s+/g, "_");
-          link.download = `ID-Card-${userName || "user"}.png`;
-          link.href = canvas.toDataURL("image/png");
-          link.click();
-        } catch (error) {
-          console.error("Download failed:", error);
-          alert(
-            "Download failed. Please ensure 'icon.png' is in the correct folder and try again."
-          );
-        } finally {
-          // Ensure the button is re-enabled and text is reset even if there's an error
-          downloadBtn.innerText = "Download as PNG";
-          downloadBtn.disabled = false;
-        }
       }
 
       function goBack() {
         cardPage.style.display = "none";
         formPage.style.display = "flex";
         idForm.reset();
-        document.getElementById("cardPhoto").src = "";
+        uploadedFile = null;
+        uploadPrompt.style.display = "flex";
+        filePreview.style.display = "none";
+        previewImage.src = "#";
       }
     </script>
   </body>
