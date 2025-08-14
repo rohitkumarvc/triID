@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Final ID Card Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Libre+Barcode+39+Text&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+      :root {
+        --saffron: #ff9933;
+        --white: #ffffff;
+        --green: #138808;
+        --navy: #000080;
+        --dark-text: #2c3e50;
+        --light-text: #7f8c8d;
+        --background: #ecf0f1;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --border-color: #bdc3c7;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Roboto", sans-serif;
+        background-color: var(--background);
+        color: var(--dark-text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      #formPage,
+      #cardPage {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease-in-out;
+      }
+      #cardPage {
+        display: none;
+      }
+
+      .form-container {
+        background: var(--white);
+        padding: 30px 40px;
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        width: 100%;
+        max-width: 450px;
+        text-align: center;
+      }
+      .form-container h1 {
+        margin-top: 0;
+        margin-bottom: 30px;
+        font-weight: 700;
+      }
+      .form-group {
+        margin-bottom: 22px;
+        text-align: left;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: var(--light-text);
+        font-size: 14px;
+      }
+      input[type="text"],
+      input[type="date"],
+      input[type="file"] {
+        width: 100%;
+        padding: 12px 15px;
+        box-sizing: border-box;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        font-family: "Roboto", sans-serif;
+        font-size: 16px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+      input:focus {
+        outline: none;
+        border-color: var(--saffron);
+        box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.2);
+      }
+
+      .primary-btn {
+        background-color: var(--saffron);
+        color: white;
+        padding: 14px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 500;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+        width: 100%;
+        margin-top: 10px;
+      }
+      .primary-btn:hover {
+        background-color: #e68a2e;
+        transform: translateY(-2px);
+      }
+
+      #idCard {
+        width: 375px;
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+      }
+
+      /* --- ENLARGED CARD HEADER --- */
+      .card-header {
+        background: var(--saffron);
+        padding: 20px; /* Increased padding */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--navy);
+        text-align: center;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+      }
+      .emblem {
+        width: 60px; /* Increased size */
+        height: auto;
+        margin-right: 20px; /* Adjusted margin */
+      }
+      .header-text h2 {
+        margin: 0;
+        font-size: 19px; /* Increased font size */
+        font-weight: 700;
+      }
+      .header-text p {
+        margin: 0;
+        font-size: 15px; /* Increased font size */
+        font-weight: 500;
+      }
+
+      .card-body {
+        display: flex;
+        padding: 25px;
+        gap: 20px;
+      }
+      .photo-section {
+        width: 110px;
+        flex-shrink: 0;
+        text-align: center;
+      }
+      #cardPhoto {
+        width: 110px;
+        height: 130px;
+        object-fit: cover;
+        object-position: center;
+        border-radius: 12px;
+        border: 4px solid var(--background);
+      }
+
+      .info-section {
+        flex-grow: 1;
+      }
+      #cardName {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-top: 0;
+        margin-bottom: 18px;
+        line-height: 1.2;
+      }
+      .info-grid {
+        display: grid;
+        grid-template-columns: 80px auto;
+        gap: 12px;
+      }
+      .info-grid > span {
+        font-size: 13px;
+      }
+      .info-grid > .label {
+        font-weight: 500;
+        color: var(--light-text);
+      }
+      .info-grid > .value {
+        font-weight: 500;
+        color: var(--dark-text);
+      }
+
+      .card-footer {
+        background: var(--green);
+        color: white;
+        padding: 15px 20px;
+        text-align: center;
+      }
+      .quote {
+        font-style: italic;
+        font-size: 12px;
+        margin: 0 0 10px 0;
+        opacity: 0.9;
+      }
+      .barcode {
+        font-family: "Libre Barcode 39 Text", cursive;
+        font-size: 52px;
+        line-height: 1;
+        color: var(--white);
+      }
+
+      .card-actions {
+        margin-top: 30px;
+        display: flex;
+        gap: 15px;
+      }
+      .card-actions button {
+        width: auto;
+        padding: 12px 25px;
+        font-size: 16px;
+        font-weight: 500;
+      }
+      #downloadBtn {
+        background-color: var(--green);
+      }
+      #downloadBtn:hover {
+        background-color: #107507;
+      }
+      #backBtn {
+        background-color: #7f8c8d;
+      }
+      #backBtn:hover {
+        background-color: #6a767e;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="formPage">
+      <div class="form-container">
+        <h1>Identity Card Generator</h1>
+        <form id="idForm">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              placeholder="e.g., Priya Singh"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" required />
+          </div>
+          <div class="form-group">
+            <label for="city">City / Place of Birth</label>
+            <input type="text" id="city" placeholder="e.g., Delhi" required />
+          </div>
+          <div class="form-group">
+            <label for="photo">Upload Your Photo</label>
+            <input type="file" id="photo" accept="image/*" required />
+          </div>
+          <button type="button" class="primary-btn" onclick="generateID()">
+            Generate ID Card
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div id="cardPage">
+      <div id="idCard">
+        <div class="card-header">
+          <img src="icon.png" class="emblem" alt="National Emblem" />
+          <div class="header-text">
+            <h2>Republic of India</h2>
+            <p>भारत गणराज्य</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="photo-section">
+            <img id="cardPhoto" src="" alt="Profile Photo" />
+          </div>
+          <div class="info-section">
+            <h3 id="cardName"></h3>
+            <div class="info-grid">
+              <span class="label">ID Number</span>
+              <span class="value" id="cardIdNumber"></span>
+              <span class="label">Date of Birth</span>
+              <span class="value" id="cardDob"></span>
+              <span class="label">Place</span>
+              <span class="value" id="cardCity"></span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <p class="quote" id="cardQuote"></p>
+          <div class="barcode" id="cardBarcode"></div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button id="backBtn" onclick="goBack()">&#8592; Go Back</button>
+        <button id="downloadBtn" onclick="downloadID()">Download as PNG</button>
+      </div>
+    </div>
+
+    <script>
+      const quotes = [
+        "Satyameva Jayate – Truth Alone Triumphs",
+        "Jai Hind – Victory to India",
+        "Vande Mataram – I Bow to Thee, Mother",
+        "Swaraj is my birthright and I shall have it.",
+        "You must be the change you wish to see in the world.",
+        "Service to humanity is service to God.",
+        "Arise, awake, and stop not till the goal is reached.",
+      ];
+
+      const formPage = document.getElementById("formPage");
+      const cardPage = document.getElementById("cardPage");
+      const idForm = document.getElementById("idForm");
+
+      function generateID() {
+        const name = document.getElementById("name").value.trim();
+        const dob = document.getElementById("dob").value;
+        const city = document.getElementById("city").value.trim();
+        const photo = document.getElementById("photo").files[0];
+
+        if (!name || !dob || !city || !photo) {
+          alert("Please fill all fields and upload a photo.");
+          return;
+        }
+
+        const idNumber = "ID" + Math.floor(100000 + Math.random() * 900000);
+        document.getElementById("cardName").innerText = name;
+        document.getElementById("cardIdNumber").innerText = `: ${idNumber}`;
+        document.getElementById("cardDob").innerText = `: ${dob}`;
+        document.getElementById("cardCity").innerText = `: ${city}`;
+        document.getElementById("cardQuote").innerText = `"${
+          quotes[Math.floor(Math.random() * quotes.length)]
+        }"`;
+        document.getElementById("cardBarcode").innerText = `*${idNumber}*`;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("cardPhoto").src = e.target.result;
+          formPage.style.display = "none";
+          cardPage.style.display = "flex";
+        };
+        reader.readAsDataURL(photo);
+      }
+
+      // --- FIXED DOWNLOAD FUNCTION ---
+      async function downloadID() {
+        const cardElement = document.getElementById("idCard");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const emblemImg = document.querySelector("#idCard .emblem");
+        const originalSrc = emblemImg.src;
+
+        downloadBtn.innerText = "Processing...";
+        downloadBtn.disabled = true;
+
+        try {
+          // Convert external image to a Base64 Data URI to prevent canvas tainting
+          const response = await fetch(originalSrc);
+          const blob = await response.blob();
+          const dataUrl = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+          });
+
+          // Temporarily replace src with Data URI for canvas capture
+          emblemImg.src = dataUrl;
+
+          const canvas = await html2canvas(cardElement, {
+            backgroundColor: null,
+            scale: 3,
+            useCORS: true,
+          });
+
+          // Revert the src back to the original after capture
+          emblemImg.src = originalSrc;
+
+          const link = document.createElement("a");
+          const userName = document
+            .getElementById("name")
+            .value.trim()
+            .replace(/\s+/g, "_");
+          link.download = `ID-Card-${userName || "user"}.png`;
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+        } catch (error) {
+          console.error("Download failed:", error);
+          alert(
+            "Download failed. Please ensure 'icon.png' is in the correct folder and try again."
+          );
+        } finally {
+          // Ensure the button is re-enabled and text is reset even if there's an error
+          downloadBtn.innerText = "Download as PNG";
+          downloadBtn.disabled = false;
+        }
+      }
+
+      function goBack() {
+        cardPage.style.display = "none";
+        formPage.style.display = "flex";
+        idForm.reset();
+        document.getElementById("cardPhoto").src = "";
+      }
+    </script>
+  </body>
+</html>
